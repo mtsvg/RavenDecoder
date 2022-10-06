@@ -111,7 +111,7 @@ public class HelloApplication extends Application {
 
         StackPane layout = new StackPane();
         layout.getChildren().add(vbox);
-        Scene scene = new Scene(layout, 400, 500);
+        Scene scene = new Scene(layout, 400, 600);
         stage.setScene(scene);
         stage.show();
     }
