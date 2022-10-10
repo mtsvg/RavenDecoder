@@ -116,7 +116,7 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
-    public ArrayList<String> ravenDecode(int selection) throws IOException{
+    public static ArrayList<String> ravenDecode(int selection) throws IOException{
         //import the file from my local hard drive
         File file = new File("/Users/matthew/IdeaProjects/SDLCAssignment/theraven.html");
         // use jsoup to remove html tags
@@ -172,6 +172,7 @@ public class HelloApplication extends Application {
             answers.add(theWordList.get(i).word +" : "+theWordList.get(i).count);
         }
         return answers;
+
     }
 
 
