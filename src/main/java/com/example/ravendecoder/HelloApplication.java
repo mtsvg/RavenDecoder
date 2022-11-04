@@ -12,11 +12,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.jsoup.Jsoup;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import org.junit.jupiter.api.Test;
 
-
+/***
+ * Holds global variables and start method
+ */
 public class HelloApplication extends Application {
     Button button1;
     Button button2;
@@ -116,6 +120,12 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
+    /***
+     * generates array list of specified length of the most frequent word occurrences in the Raven html file
+     * @param selection The amount of words to display that is selected by a corresponding button
+     * @return returns an array list of the selected length with the highest word count
+     * @throws IOException can throw input error if the file is not correctly read
+     */
     public static ArrayList<String> ravenDecode(int selection) throws IOException{
         //import the file from my local hard drive
         File file = new File("/Users/matthew/IdeaProjects/SDLCAssignment/theraven.html");
@@ -175,7 +185,11 @@ public class HelloApplication extends Application {
 
     }
 
-
+    /***
+     * Main method launches the javafx classes
+     * @param args ""
+     * @throws IOException Needed to handle errors with the poem inputs
+     */
     public static void main(String[] args) throws IOException {
         launch();
     }
