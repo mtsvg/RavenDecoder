@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.*;
 import org.junit.jupiter.api.Test;
 
+import java.sql.*;
+
 /***
  * Holds global variables and start method
  */
@@ -26,13 +28,15 @@ public class HelloApplication extends Application {
     Button button2;
     Button button3;
     Button button4;
+    Button buttonTest;
+    Button button20;
     Label label;
     VBox vbox;
     HBox hbox;
     ListView list;
+    ArrayList<String> answers = new ArrayList<String>();
 
 
-    ArrayList<String> answers;
 
 
     @Override
@@ -48,10 +52,24 @@ public class HelloApplication extends Application {
         button1.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
 
-                try {
 
-                    answers = ravenDecode(5);
-                } catch (IOException ex) {
+                try {
+                    Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/wordoccurrences", "root", "password");
+                    Statement statement = myConn.createStatement();
+                    String sql = "select * from words order by count DESC;";
+                    ResultSet rs = statement.executeQuery(sql);
+                    for (int i = 0; i<5; i++){
+                        rs.next();
+                        String word = rs.getString(1);
+                        int count = rs.getInt(2);
+                        System.out.println(word);
+                        System.out.println(count);
+                        answers.add(word +" : " + count);
+                    }
+
+
+
+                } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
 
@@ -64,9 +82,24 @@ public class HelloApplication extends Application {
         button2.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
 
+
                 try {
-                    answers = ravenDecode(10);
-                } catch (IOException ex) {
+                    Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/wordoccurrences", "root", "password");
+                    Statement statement = myConn.createStatement();
+                    String sql = "select * from words order by count DESC;";
+                    ResultSet rs = statement.executeQuery(sql);
+                    for (int i = 0; i<10; i++){
+                        rs.next();
+                        String word = rs.getString(1);
+                        int count = rs.getInt(2);
+                        System.out.println(word);
+                        System.out.println(count);
+                        answers.add(word +" : " + count);
+                    }
+
+
+
+                } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
 
@@ -74,29 +107,44 @@ public class HelloApplication extends Application {
             }
         });
 
-        button3 = new Button();
-        button3.setText("Top 15 words");
-        button3.setOnAction(new EventHandler<ActionEvent>() {
+        buttonTest = new Button();
+        buttonTest.setText("Decode");
+        buttonTest.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
 
                 try {
-                    answers = ravenDecode(15);
+                    ravenDecodedb();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
 
-                list.getItems().setAll(answers);
+                //list.getItems().setAll(answers);
             }
         });
 
-        button4 = new Button();
-        button4.setText("Top 20 words");
-        button4.setOnAction(new EventHandler<ActionEvent>() {
+        button20 = new Button();
+        button20.setText("Top 20");
+        button20.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
 
+
                 try {
-                    answers = ravenDecode(20);
-                } catch (IOException ex) {
+                    Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/wordoccurrences", "root", "password");
+                    Statement statement = myConn.createStatement();
+                    String sql = "select * from words order by count DESC;";
+                    ResultSet rs = statement.executeQuery(sql);
+                    for (int i = 0; i<20; i++){
+                        rs.next();
+                        String word = rs.getString(1);
+                        int count = rs.getInt(2);
+                        System.out.println(word);
+                        System.out.println(count);
+                        answers.add(word +" : " + count);
+                    }
+
+
+
+                } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
 
@@ -108,7 +156,7 @@ public class HelloApplication extends Application {
         list.setMinHeight(500);
 
         hbox = new HBox();
-        hbox.getChildren().addAll(button1, button2,button3,button4);
+        hbox.getChildren().addAll(buttonTest, button1, button2, button20);
 
         vbox = new VBox();
         vbox.getChildren().addAll(label, hbox, list);
@@ -122,11 +170,13 @@ public class HelloApplication extends Application {
 
     /***
      * generates array list of specified length of the most frequent word occurrences in the Raven html file
-     * @param selection The amount of words to display that is selected by a corresponding button
-     * @return returns an array list of the selected length with the highest word count
+     * @return returns nothing
      * @throws IOException can throw input error if the file is not correctly read
      */
-    public static ArrayList<String> ravenDecode(int selection) throws IOException{
+
+
+
+    public static void ravenDecodedb() throws IOException{
         //import the file from my local hard drive
         File file = new File("/Users/matthew/IdeaProjects/SDLCAssignment/theraven.html");
         // use jsoup to remove html tags
@@ -141,48 +191,45 @@ public class HelloApplication extends Application {
         //initialize scanner on the substring
         Scanner theRaven = new Scanner(ravenTrimmed);
 
-        //create a hash map to store the words mapped to the counts
-        Map<String, Integer> words = new HashMap<>();
-
         //begin to scan each word of the poem
         while (theRaven.hasNext()){
             //creates a temporary word to store that is lowercase and removes any punctuation
             String word = theRaven.next().toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
 
-            //if the word does not exist in the hashmap, add it with the value count of 1
-            if (words.get(word) == null){
-                words.put(word, 1);
+                String url = "jdbc:mysql://localhost:3306/wordoccurrences";
+                String user = "root";
+                String password = "password";
 
-                //if word does exist it will be replaced by the same word with an updated count
-            } else {
-                //words.put(word, words.get(word) + 1);
-                words.replace(word, words.get(word), words.get(word) + 1);
-            }
+                try {
+                    Connection myConn = DriverManager.getConnection(url, user, password);
+                    Statement statement = myConn.createStatement();
+                    Statement search = myConn.createStatement();
+                    String searchsql = "select * from words where word= '"+ word +"';";
+
+                    ResultSet rs = search.executeQuery(searchsql);
+                    if (!rs.next()){
+                        String insertsql = "replace into words values ('"+ word + "', 1);";
+                        statement.executeUpdate(insertsql);
+
+
+                    } else {
+                        String findCount = "select * from words where word='" + word + "';";
+                        ResultSet temprs = statement.executeQuery(findCount);
+                        temprs.next();
+                        System.out.println(temprs.getInt("count"));
+                        int tempCount = temprs.getInt("count");
+                        tempCount = tempCount + 1;
+                        String updatesql = "replace into words values ('"+ word + "', "+tempCount+");";
+                        statement.executeUpdate(updatesql);
+
+                    }
+
+
+                    myConn.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
         }
-
-        //this iterates over the hashmap and uses it to populate the array of words with WordObjects
-
-        ArrayList<WordObject> theWordList =  new ArrayList<WordObject>();
-
-        for (Map.Entry<String, Integer> entry : words.entrySet()) {
-            String k = entry.getKey();
-            Integer v = entry.getValue();
-
-            theWordList.add(new WordObject(k,v));
-        }
-
-        // sorts the arraylist by word count
-        Collections.sort(theWordList, Comparator.comparingInt(WordObject::getCount).reversed());
-
-        // print words and counts to console
-
-        ArrayList<String> answers = new ArrayList<>();
-        for (int i = 0; i < selection; i++){
-            //System.out.println(theWordList.get(i).word +" : "+theWordList.get(i).count);
-            answers.add(theWordList.get(i).word +" : "+theWordList.get(i).count);
-        }
-        return answers;
-
     }
 
     /***
@@ -191,6 +238,7 @@ public class HelloApplication extends Application {
      * @throws IOException Needed to handle errors with the poem inputs
      */
     public static void main(String[] args) throws IOException {
+
         launch();
     }
 }
