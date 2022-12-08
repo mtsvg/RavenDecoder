@@ -58,6 +58,7 @@ public class HelloApplication extends Application {
                     Statement statement = myConn.createStatement();
                     String sql = "select * from words order by count DESC;";
                     ResultSet rs = statement.executeQuery(sql);
+                    answers.clear();
                     for (int i = 0; i<5; i++){
                         rs.next();
                         String word = rs.getString(1);
@@ -65,6 +66,7 @@ public class HelloApplication extends Application {
                         System.out.println(word);
                         System.out.println(count);
                         answers.add(word +" : " + count);
+
                     }
 
 
@@ -88,6 +90,7 @@ public class HelloApplication extends Application {
                     Statement statement = myConn.createStatement();
                     String sql = "select * from words order by count DESC;";
                     ResultSet rs = statement.executeQuery(sql);
+                    answers.clear();
                     for (int i = 0; i<10; i++){
                         rs.next();
                         String word = rs.getString(1);
@@ -133,6 +136,7 @@ public class HelloApplication extends Application {
                     Statement statement = myConn.createStatement();
                     String sql = "select * from words order by count DESC;";
                     ResultSet rs = statement.executeQuery(sql);
+                    answers.clear();
                     for (int i = 0; i<20; i++){
                         rs.next();
                         String word = rs.getString(1);
